@@ -161,6 +161,9 @@ static void initFasterShuffle(void)
     size_t size = (1 << 16);
     permute16bits = malloc(size * sizeof (uint16_t));
 
+    if (!permute16bits)
+        return;
+
     for (size_t i = 0; i < size; i++) {
         uint8_t lower = i & 0xFF;
         uint8_t upper = i >> 8;
@@ -192,7 +195,7 @@ static void shuffle(int_128* val)
     }
     else {
         fastCounter++;
-        if (fastCounter > (1 << 16))
+        if (fastCounter == (1 << 16))
             initFasterShuffle();
         for (int i = 0; i < 4; i++) {
             nu |= permute8bits[l & 0xFF];
@@ -208,14 +211,14 @@ static void shuffle(int_128* val)
 
 
     // perform some xorshift
-    val->upper ^= (val->lower << 23) | (val->lower >> (64 - 23));
-    val->lower ^= (val->upper << 47) | (val->upper >> (64 - 47));
+    val->upper   ^= (val->lower << 23) | (val->lower >> (64 - 23));
+    val->lower   ^= (val->upper << 17) | (val->upper >> (64 - 17));
 
     
     // rotate 128 bits
-    uint64_t temp = (val->upper << 17) | (val->lower >> (64 - 17));
-    val->lower = (val->lower << 17) | (val->upper >> (64 - 17));
-    val->upper = temp;
+    uint64_t temp = (val->upper << 47) | (val->lower >> (64 - 47));
+    val->lower    = (val->lower << 47) | (val->upper >> (64 - 47));
+    val->upper    = temp;
 }
 
 
