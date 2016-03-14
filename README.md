@@ -1,4 +1,4 @@
-# hashy
+# Hashy
 
 Hashy is a self-made cryptographic hash function.
 
