@@ -10,4 +10,7 @@ hashy: hashy.c
 hashy-%: longhashy.c
 	$(CC) $< -o $@ $(CFLAGS) -DBITS=$(subst hashy-,,$@)
 
+.PHONY: clean
+clean:
+	rm $(EXECUTABLES)
 
