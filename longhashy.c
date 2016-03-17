@@ -192,8 +192,12 @@ static void shuffle(HashType* restrict val)
             }
         }
     }
-    for (int i = 0; i < nParts; i++)
-        val->part[i] = newVals[i];
+    for (int i = 0; i < nParts; i++) {
+        if (newVals[i] & 0x40000ULL)
+            val->part[i] = newVals[i];
+        else
+            val->part[i] = newVals[i] * 3762768456805741661ULL;
+    }
 
     // rotate, shuffle and xor parts
     const uint8_t sh[] = {
